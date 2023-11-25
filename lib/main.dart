@@ -1,5 +1,5 @@
 
-
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:elearning/picking.dart';
 import 'package:elearning/provider/profileprovider.dart';
 import 'package:elearning/register.dart';
@@ -16,10 +16,12 @@ import 'fulldisplay.dart';
 import 'welcome_screen.dart';
 import 'login.dart';
 
-void main() {
-  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (context) => ProfileProvider()),
-  ],
-  child: Myapp()));
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // Stripe.publishableKey='pk_test_51OFgWCSDo2mwB8uz9fG4ZBXFIJ14YgfZ0r72QsqTV9HvXiV1jbpKvjwGAxnBv7qL4VHHm45o359HVDqBJTp4PMOi00GuSRZ567';
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => ProfileProvider()),
+  ], child: Myapp()));
 }
 
 class Myapp extends StatelessWidget {

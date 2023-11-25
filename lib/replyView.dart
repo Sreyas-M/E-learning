@@ -31,9 +31,7 @@ class _RepliesState extends State<Replies> {
     Response response=await post(Uri.parse("http://192.168.43.135/php/elearn/api/cancelqueryapi.php"),body: data);
     if(response.statusCode==200){
       Fluttertoast.showToast(msg: "cleared");
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
   var user_id;
@@ -56,7 +54,10 @@ class _RepliesState extends State<Replies> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Replies'),
+        backgroundColor: Colors.blue,
+      ),
       body: FutureBuilder(
         future: repliesfromAdmin(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -67,27 +68,41 @@ class _RepliesState extends State<Replies> {
           }
           if (snapshot.hasData) {
             if (snapshot.data['data'] == null) {
-              return Center(child: Text("no data"));
+              return Center(child: Text("No data"));
             } else {
               return ListView.builder(
-                  itemCount: snapshot.data["data"].length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
+                itemCount: snapshot.data["data"].length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    elevation: 3,
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: ListTile(
                       title: Text(
                         snapshot.data["data"][index]["reply"],
                         style: TextStyle(
-                            fontSize: 20, fontStyle: FontStyle.italic),
+                          fontSize: 18,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                      subtitle: Text(
-                          snapshot.data["data"][index]["queries"] ?? "no data"),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          snapshot.data["data"][index]["queries"] ?? "No data",
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                       trailing: ElevatedButton(
                         onPressed: () {
                           removeReply(id: snapshot.data["data"][index]["q_id"]);
                         },
-                        child: Text("clear"),
+                        child: Text("Clear"),
                       ),
-                    );
-                  });
+                    ),
+                  );
+                },
+              );
             }
           } else {
             return Center(

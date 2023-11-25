@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_Oorder.dart';
@@ -8,55 +12,18 @@ class DescriptionSection extends StatefulWidget {
   //const DescriptionSection({Key? key}) : super(key: key);
   final String course_id;
   final String uder_id;
- String description;
-  DescriptionSection({required this.course_id, required this.uder_id,required this.description});
+  String description;
+  DescriptionSection(
+      {required this.course_id,
+      required this.uder_id,
+      required this.description});
 
   @override
   State<DescriptionSection> createState() => _DescriptionSectionState();
 }
 
 class _DescriptionSectionState extends State<DescriptionSection> {
-  //void _showPaymentBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         padding: EdgeInsets.all(16.0),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             Text(
-  //               'Select a Payment Option',
-  //               style: TextStyle(
-  //                 fontSize: 20,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //             ),
-  //             SizedBox(height: 16),
-  //             ListTile(
-  //               leading: Icon(Icons.credit_card),
-  //               title: Text('Credit Card'),
-  //               onTap: () {
-  //                 // Handle credit card payment
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //             ListTile(
-  //               leading: Icon(Icons.payment),
-  //               title: Text('PayPal'),
-  //               onTap: () {
-  //                 // Handle PayPal payment
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //             // Add more payment options as needed
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  //Map<String, dynamic>? paymentIntentData;
 
   Future purchaseOrder() async {
     var data = {
@@ -83,7 +50,9 @@ class _DescriptionSectionState extends State<DescriptionSection> {
       padding: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          Text(widget.description,style: TextStyle(
+          Text(
+            widget.description,
+            style: TextStyle(
               fontSize: 16,
               color: Colors.black.withOpacity(0.7),
             ),
@@ -131,11 +100,11 @@ class _DescriptionSectionState extends State<DescriptionSection> {
             ],
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               purchaseOrder();
-              //_showPaymentBottomSheet(context);
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => ViewOOrder()));
+              // await makePayment();
             },
             child: Text('Submit'),
           ),
@@ -143,4 +112,82 @@ class _DescriptionSectionState extends State<DescriptionSection> {
       ),
     );
   }
-}
+
+  //Make payment Function
+//   Future<void> makePayment() async {
+//     try {
+//       paymentIntentData = await createPaymentIntent('20', 'USD');
+//       await Stripe.instance.initPaymentSheet(
+//           paymentSheetParameters: SetupPaymentSheetParameters(
+//         paymentIntentClientSecret: paymentIntentData!['client_secret'],
+//             style: ThemeMode.dark,
+//             merchantDisplayName: 'ASIF'
+//       ));
+//       displayPaymentSheet();
+//     } catch (e) {
+//       print('exception' + e.toString());
+//     }
+//   }
+//
+//   displayPaymentSheet() async {
+//     try {
+//       await Stripe.instance
+//           .presentPaymentSheet(
+//         //       parameters: PresentPaymentSheetParameters(
+//         // clientSecret: paymentIntentData!['client_secret'],
+//         // confirmPayment: true,
+//         // )
+//       )
+//           .then((newValue) {
+//         print('payment intent' + paymentIntentData!['id'].toString());
+//         print(
+//             'payment intent' + paymentIntentData!['client_secret'].toString());
+//         print('payment intent' + paymentIntentData!['amount'].toString());
+//         print('payment intent' + paymentIntentData.toString());
+//         //orderPlaceApi(paymentIntentData!['id'].toString());
+//         ScaffoldMessenger.of(context)
+//             .showSnackBar(const SnackBar(content: Text("paid successfully")));
+//
+//         paymentIntentData = null;
+//       }).onError((error, stackTrace) {
+//         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+//       });
+//     } on StripeException catch (e) {
+//       print('Exception/DISPLAYPAYMENTSHEET==> $e');
+//       showDialog(
+//           context: context,
+//           builder: (_) => const AlertDialog(
+//             content: Text("Cancelled "),
+//           ));
+//     } catch (e) {
+//       print('$e');
+//     }
+//   }
+//
+//
+//   createPaymentIntent(String amount, String currency) async {
+//     try {
+//       Map<String, dynamic> body = {
+//         'amount': calculateAmount(amount),
+//         'currency': currency,
+//         'payment_method_types[]': 'card',
+//       };
+//       var response = await http.post(
+//           Uri.parse('https://api.stripe.com/v1/payment_intents'),
+//           body: body,
+//           headers: {
+//             'Authorization':
+//                 'Bearer sk_test_51OFgWCSDo2mwB8uzksXm3MT3O7Pd5ejaBustRPdnTKKTGdruHXJXfvMp1LFpGx11cJ8RYg2fQkbhjXKchkkUUFqN00zS6evcM0',
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//           });
+//       return jsonDecode(response.body.toString());
+//     } catch (e) {
+//       print('exception' + e.toString());
+//     }
+//   }
+//
+//   calculateAmount(String amount) {
+//     final price = int.parse(amount) * 100;
+//     return price.toString();
+//   }
+ }

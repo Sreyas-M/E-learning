@@ -8,6 +8,7 @@ import 'package:elearning/replyView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login.dart';
 
@@ -19,39 +20,35 @@ class DisplayPage extends StatefulWidget {
 }
 
 class _DisplayPageState extends State<DisplayPage> {
-  //Creating static data in lists
-
-  List catNames = [
-    "Category",
-    "Classes",
-    'Free Course',
-  ];
-
-  List<Color> catColors = [
-    Color(0xFFFFCf2F),
-    Color(0xFF6FE08D),
-    Color(0xFF61BDFD),
-  ];
-
-  List<Icon> catIcons = [
-    Icon(
-      Icons.category,
-      color: Colors.white,
-      size: 30,
-    ),
-    Icon(
-      Icons.video_library,
-      color: Colors.white,
-      size: 30,
-    ),
-    Icon(
-      Icons.emoji_events,
-      color: Colors.white,
-      size: 30,
-    )
-  ];
   //course image and name display function
   var result;
+  String? user_id;
+  String? name;
+  Future getUser() async {
+    var user = {"id": user_id.toString()};
+      Response response = await post(
+          Uri.parse("http://192.168.43.135/php/elearn/api/viewuserapi.php?"),
+          body: user);
+
+      if (response.statusCode == 200) {
+        var data1 = jsonDecode(response.body);
+        print(data1);
+        name=data1["data"]["firstname"];
+        print(name);
+
+          // return data1;
+        }
+    }
+  Future userCrenditails() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var result = await sharedPreferences.getInt("user")!;
+    user_id = result.toString();
+    setState(() {
+      user_id;
+    });
+    print(user_id);
+  }
+
   // bool isSingleTrip = true;
   Future viewPackages() async {
     Response response = await get(
@@ -64,7 +61,13 @@ class _DisplayPageState extends State<DisplayPage> {
       return result;
     }
   }
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userCrenditails();
+    Future.delayed(Duration(seconds: 1)).whenComplete(() => getUser());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +77,8 @@ class _DisplayPageState extends State<DisplayPage> {
             padding: EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 10),
             decoration: BoxDecoration(
                 color: Colors.blue,
+                image: DecorationImage(
+                    image: AssetImage('assets/tree.jpg'), fit: BoxFit.fill),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -81,60 +86,22 @@ class _DisplayPageState extends State<DisplayPage> {
             child: Column(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ReplySend()));
-                      },
-                      child: Icon(
-                        Icons.notifications,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+
                 Padding(
                   padding: EdgeInsets.only(left: 3, bottom: 15),
-                  child: Text(
-                    "Hi Name",
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
-                        wordSpacing: 2,
-                        color: Colors.white),
+                  child:name==null?SizedBox(): Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Text(
+                      name!,
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                          wordSpacing: 2,
+                          color: Colors.white),
+                    ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 20),
-                  width: MediaQuery.of(context).size.width,
-                  height: 55,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Search Here",
-                        hintStyle:
-                            TextStyle(color: Colors.black.withOpacity(0.5)),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 25,
-                        )),
-                  ),
-                )
               ],
             ),
           ),
@@ -189,7 +156,6 @@ class _DisplayPageState extends State<DisplayPage> {
                 //   },
                 // ),
 
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -198,13 +164,6 @@ class _DisplayPageState extends State<DisplayPage> {
                       style:
                           TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
                     ),
-                    Text(
-                      "See All",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue),
-                    )
                   ],
                 ),
                 SizedBox(
@@ -245,8 +204,8 @@ class _DisplayPageState extends State<DisplayPage> {
                                             ["image1"],
                                         course_id: snapshot.data['data'][index]
                                             ["course_id"],
-                                        description: snapshot.data['data'][index]
-                                        ["description"],
+                                        description: snapshot.data['data']
+                                            [index]["description"],
                                         topicfir: snapshot.data['data'][index]
                                             ["topicfir"],
                                         topicsec: snapshot.data['data'][index]

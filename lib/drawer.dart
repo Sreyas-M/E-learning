@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'feedback.dart';
+
 class DrawerMenu extends StatefulWidget {
   const DrawerMenu({Key? key}) : super(key: key);
 
@@ -19,6 +21,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   var data;
   var result;
   String? user_id;
+
 
   Future getUser() async {
     var user = {"id": user_id.toString()};
@@ -109,7 +112,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 ListTile(
                   leading: Icon(Icons.feedback),
                   title: Text('FeedBack'),
-                  onTap: () { },
+                  onTap: () { Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FeedBack()));},
                 ),
                 Divider(),
                 ListTile(

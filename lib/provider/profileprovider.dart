@@ -48,6 +48,7 @@ class ProfileProvider extends ChangeNotifier{
         ),
       );
     }
+    notifyListeners();
   }
   Future userCrenditails()async{
     SharedPreferences sharedPreferences=await SharedPreferences.getInstance();

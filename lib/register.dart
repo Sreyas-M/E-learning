@@ -1,12 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
-import 'package:elearning/bottom_nav.dart';
-import 'package:elearning/picking.dart';
-import 'package:elearning/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'login.dart';
@@ -24,30 +20,34 @@ class _MyRegisterState extends State<MyRegister> {
   TextEditingController pass = TextEditingController();
   TextEditingController phone = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  addUser(BuildContext context ) async {
-    final uri=Uri.parse("http://192.168.43.135/php/elearn/api/adduserapi.php");
-    var request=http.MultipartRequest("POST",uri);
-    request.fields["firstname"]=name.text;
-    request.fields["email"]=email.text;
-    request.fields["phone"]=phone.text;
-    request.fields["password"]=pass.text;
-    var pic=await http.MultipartFile.fromPath("photo",_image!.path);
-    request.files.add(pic);
-    var response=await request.send();
-    if(response.statusCode==200){
-      print("Sucess");
-      Fluttertoast.showToast(msg: "Registered");
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Userlogin(),));
-    }else{
-      Fluttertoast.showToast(msg: "Failed");
-    }
-  }
-
-
 
   File? file;
   XFile? _image;
-  File? selectedIMage;
+  File? selectedImage;
+
+  addUser(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final uri = Uri.parse("http://192.168.43.135/php/elearn/api/adduserapi.php");
+      var request = http.MultipartRequest("POST", uri);
+      request.fields["firstname"] = name.text;
+      request.fields["email"] = email.text;
+      request.fields["phone"] = phone.text;
+      request.fields["password"] = pass.text;
+
+      var pic = await http.MultipartFile.fromPath("photo", _image!.path);
+      request.files.add(pic);
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        print("Success");
+        Fluttertoast.showToast(msg: "Registered");
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Userlogin(),));
+      } else {
+        Fluttertoast.showToast(msg: "Failed");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -60,18 +60,18 @@ class _MyRegisterState extends State<MyRegister> {
           children: [
             _image != null
                 ? Padding(
-                  padding: const EdgeInsets.only(top: 145,left: 250),
-                  child: CircleAvatar(
-                      radius: 50, backgroundImage: FileImage(File(_image!.path))),
-                )
+              padding: const EdgeInsets.only(top: 145, left: 250),
+              child: CircleAvatar(
+                  radius: 50, backgroundImage: FileImage(File(_image!.path))),
+            )
                 : Padding(
-                  padding: const EdgeInsets.only(top: 145,left: 250),
-                  child: const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCsjjmwwnCK8jwtLh-XmBuXLIGc59lEnooYw&usqp=CAU"),
-                    ),
-                ),
+              padding: const EdgeInsets.only(top: 145, left: 250),
+              child: const CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCsjjmwwnCK8jwtLh-XmBuXLIGc59lEnooYw&usqp=CAU"),
+              ),
+            ),
             Container(
               padding: EdgeInsets.only(left: 50, top: 100),
               child: Text("Create Your\nAccount",
@@ -83,103 +83,132 @@ class _MyRegisterState extends State<MyRegister> {
                     top: MediaQuery.of(context).size.height * 0.35,
                     right: 35,
                     left: 35),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: name,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.white)),
-                          hintText: "Name",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      controller: email,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.white)),
-                          hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      controller: pass,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          fillColor: Colors.grey.shade600,
-                          hintText: "Password",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      controller: phone,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.white)),
-                          hintText: "Phone",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color.fromARGB(255, 60, 170, 223),
-                          child: IconButton(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: name,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.white)),
+                            hintText: "Name",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      TextFormField(
+                        controller: email,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.white)),
+                            hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      TextFormField(
+                        controller: pass,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            fillColor: Colors.grey.shade600,
+                            hintText: "Password",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      TextFormField(
+                        controller: phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your phone number';
+                          }
+                          // You can add more phone number validation logic here if needed.
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.white)),
+                            hintText: "Phone",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Color.fromARGB(255, 60, 170, 223),
+                            child: IconButton(
+                                onPressed: () {
+                                  addUser(context);
+                                },
+                                icon: Icon(
+                                  Icons.coronavirus_rounded,
+                                  color: Colors.white,
+                                  size: 30,
+                                )),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          TextButton(
                               onPressed: () {
-                                addUser(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => BaseScreen()));
+                                        builder: (context) => Userlogin()));
                               },
-                              icon: Icon(
-                                Icons.coronavirus_rounded,
-                                color: Colors.white,
-                                size: 30,
+                              child: Text(
+                                "Already have an Account?",
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.black,
+                                ),
                               )),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Userlogin()));
-                            },
-                            child: Text(
-                              "Already have an Account?",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.black,
-                              ),
-                            )),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -252,7 +281,7 @@ class _MyRegisterState extends State<MyRegister> {
         });
   }
 
-//Gallery
+  //Gallery
   pickImageFromgallery() async {
     ImagePicker imagePicker = ImagePicker();
     XFile? xFile = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -271,4 +300,5 @@ class _MyRegisterState extends State<MyRegister> {
         _image = xFile;
       });
     }
-  }}
+  }
+}
