@@ -1,26 +1,31 @@
-
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:elearning/picking.dart';
-import 'package:elearning/provider/profileprovider.dart';
-import 'package:elearning/register.dart';
-import 'package:elearning/relpy.dart';
-import 'package:elearning/userProfile.dart';
-import 'package:elearning/view_Oorder.dart';
+import 'package:elearning/provider/courseScreenprovider.dart';
+import 'package:elearning/provider/descriptionprovider.dart';
+import 'package:elearning/provider/feedbackprovider.dart';
+import 'package:elearning/provider/fullDisplayprovider.dart';
+import 'package:elearning/provider/loginprovider.dart';
+import 'package:elearning/provider/registerprovider.dart';
+import 'package:elearning/provider/replyViewprovider.dart';
+import 'package:elearning/provider/replyprovider.dart';
+import 'package:elearning/provider/vieworderProvider.dart';
+import 'package:elearning/provider/welcomeprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'bottom_nav.dart';
-import 'course_screen.dart';
-import 'feedback.dart';
-import 'fulldisplay.dart';
 import 'welcome_screen.dart';
-import 'login.dart';
+
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // Stripe.publishableKey='pk_test_51OFgWCSDo2mwB8uz9fG4ZBXFIJ14YgfZ0r72QsqTV9HvXiV1jbpKvjwGAxnBv7qL4VHHm45o359HVDqBJTp4PMOi00GuSRZ567';
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => ProfileProvider()),
+    ChangeNotifierProvider(create: (context) => FeedbackProvider()),
+    ChangeNotifierProvider(create: (context) => OrderProvider()),
+    ChangeNotifierProvider(create: (context) => DisplayProvider()),
+    ChangeNotifierProvider(create: (context) => LoginProvider()),
+    ChangeNotifierProvider(create: (context) => WelcomeProvider()),
+    ChangeNotifierProvider(create: (context) => ReplyProvider()),
+    ChangeNotifierProvider(create: (context) => ReplyViewProvider()),
+    ChangeNotifierProvider(create: (context) => RegisterProvider()),
+    ChangeNotifierProvider(create: (context) => CourseScreenProvider()),
+    ChangeNotifierProvider(create: (context) => DescProvider()),
+
   ], child: Myapp()));
 }
 
@@ -32,7 +37,7 @@ class Myapp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: BaseScreen(),
+      home:BaseScreen(),
     );
   }
 }

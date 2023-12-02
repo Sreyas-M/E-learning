@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:elearning/ip.dart';
-import 'package:elearning/provider/profileprovider.dart';
+import 'package:elearning/provider/loginprovider.dart';
+import 'package:elearning/provider/welcomeprovider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -12,7 +13,6 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProfileProvider>(context, listen: false).userCrenditails();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -24,14 +24,14 @@ class Profile extends StatelessWidget {
         )),
       ),
       body: FutureBuilder(
-          future: Provider.of<ProfileProvider>(context, listen: false)
-              .getUser(context),
+          future: Provider.of<LoginProvider>(context, listen: false)
+              .getUser(context,Provider.of<LoginProvider>(context).user_id),
           builder: (context, snapshot) {
-            // if(snapshot.connectionState==ConnectionState.waiting){
-            //   return Center(
-            //     child: CircularProgressIndicator(),
-            //   );
-            // }
+            if(snapshot.connectionState==ConnectionState.waiting){
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
             if (snapshot.hasData) {
               return Center(
                 child: Padding(
@@ -124,7 +124,7 @@ class Profile extends StatelessWidget {
               );
             } else {
               return Center(
-                child: Text("dfghj"),
+                child: Text("Not Found"),
               );
             }
           }),

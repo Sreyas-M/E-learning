@@ -3,73 +3,25 @@ import 'dart:core';
 
 import 'package:elearning/course_screen.dart';
 import 'package:elearning/ip.dart';
+import 'package:elearning/model/courseModel.dart';
+import 'package:elearning/provider/fullDisplayprovider.dart';
+import 'package:elearning/provider/loginprovider.dart';
+import 'package:elearning/provider/welcomeprovider.dart';
 import 'package:elearning/relpy.dart';
 import 'package:elearning/replyView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'login.dart';
 
-class DisplayPage extends StatefulWidget {
+class DisplayPage extends StatelessWidget {
   const DisplayPage({Key? key}) : super(key: key);
-
-  @override
-  State<DisplayPage> createState() => _DisplayPageState();
-}
-
-class _DisplayPageState extends State<DisplayPage> {
-  //course image and name display function
-  var result;
-  String? user_id;
-  String? name;
-  Future getUser() async {
-    var user = {"id": user_id.toString()};
-      Response response = await post(
-          Uri.parse("http://192.168.43.135/php/elearn/api/viewuserapi.php?"),
-          body: user);
-
-      if (response.statusCode == 200) {
-        var data1 = jsonDecode(response.body);
-        print(data1);
-        name=data1["data"]["firstname"];
-        print(name);
-
-          // return data1;
-        }
-    }
-  Future userCrenditails() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var result = await sharedPreferences.getInt("user")!;
-    user_id = result.toString();
-    setState(() {
-      user_id;
-    });
-    print(user_id);
-  }
-
-  // bool isSingleTrip = true;
-  Future viewPackages() async {
-    Response response = await get(
-        Uri.parse("http://192.168.43.135/php/elearn/api/viewcourses_api.php"));
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      setState(() {
-        result = data;
-      });
-      return result;
-    }
-  }
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    userCrenditails();
-    Future.delayed(Duration(seconds: 1)).whenComplete(() => getUser());
-  }
   @override
   Widget build(BuildContext context) {
+    var uid = Provider.of<LoginProvider>(context, listen: false).user_id;
+    Provider.of<LoginProvider>(context, listen: false).getUser(context,uid);
     return Scaffold(
       body: ListView(
         children: [
@@ -89,10 +41,10 @@ class _DisplayPageState extends State<DisplayPage> {
 
                 Padding(
                   padding: EdgeInsets.only(left: 3, bottom: 15),
-                  child:name==null?SizedBox(): Padding(
+                  child:Provider.of<LoginProvider>(context).name==null?SizedBox(): Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: Text(
-                      name!,
+                      Provider.of<LoginProvider>(context).name!,
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -109,53 +61,6 @@ class _DisplayPageState extends State<DisplayPage> {
             padding: EdgeInsets.only(top: 20, left: 15, right: 15),
             child: Column(
               children: [
-                //Corse Screen Top
-
-                // GridView.builder(
-                //   itemCount: catNames.length,
-                //   shrinkWrap: true,
-                //   physics: NeverScrollableScrollPhysics(),
-                //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //     crossAxisCount: 3,
-                //     childAspectRatio: 1.1,
-                //   ),
-                //   itemBuilder: (context, index) {
-                //     return Column(
-                //       children: [
-                //         InkWell(
-                //           onTap: () {
-                //             Navigator.push(
-                //                 context,
-                //                 MaterialPageRoute(
-                //                     builder: (context) => Replies()));
-                //           },
-                //           child: Container(
-                //             height: 60,
-                //             width: 60,
-                //             decoration: BoxDecoration(
-                //               color: catColors[index],
-                //               shape: BoxShape.circle,
-                //             ),
-                //             child: Center(
-                //               child: catIcons[index],
-                //             ),
-                //           ),
-                //         ),
-                //         SizedBox(
-                //           height: 10,
-                //         ),
-                //         Text(
-                //           catNames[index],
-                //           style: TextStyle(
-                //               fontSize: 16,
-                //               fontWeight: FontWeight.w500,
-                //               color: Colors.black.withOpacity(0.7)),
-                //         )
-                //       ],
-                //     );
-                //   },
-                // ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -171,7 +76,7 @@ class _DisplayPageState extends State<DisplayPage> {
                 ),
                 //Builder for courses
                 FutureBuilder(
-                    future: viewPackages(),
+                    future: Provider.of<DisplayProvider>(context, listen: false).viewPackages(),
                     builder: (context, snapshot) {
                       // if (snapshot.connectionState==ConnectionState.waiting){
                       //   return Center(
@@ -200,26 +105,28 @@ class _DisplayPageState extends State<DisplayPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => CourseScreen(
-                                        img: snapshot.data["data"][index]
-                                            ["image1"],
-                                        course_id: snapshot.data['data'][index]
-                                            ["course_id"],
-                                        description: snapshot.data['data']
-                                            [index]["description"],
-                                        topicfir: snapshot.data['data'][index]
-                                            ["topicfir"],
-                                        topicsec: snapshot.data['data'][index]
-                                            ["topicsec"],
-                                        topicthird: snapshot.data['data'][index]
-                                            ["topicthird"],
-                                        topicfour: snapshot.data['data'][index]
-                                            ["topicfour"],
+                                        // img: snapshot.data["data"][index]
+                                        //     ["image1"],
+                                        // course_id: snapshot.data['data'][index]
+                                        //     ["course_id"],
+                                        // description: snapshot.data['data']
+                                        //     [index]["description"],
+                                        // topicfir: snapshot.data['data'][index]
+                                        //     ["topicfir"],
+                                        // topicsec: snapshot.data['data'][index]
+                                        //     ["topicsec"],
+                                        // topicthird: snapshot.data['data'][index]
+                                        //     ["topicthird"],
+                                        // topicfour: snapshot.data['data'][index]
+                                        //     ["topicfour"],
                                         name: snapshot.data['data'][index]
                                             ["name"],
-                                        author: snapshot.data['data'][index]
-                                            ["author"],
-                                        vidname: snapshot.data['data'][index]
-                                            ["vidname"],
+                                        // author: snapshot.data['data'][index]
+                                        //     ["author"],
+                                        // vidname: snapshot.data['data'][index]
+                                        //     ["vidname"],
+                                        course_id: snapshot.data['data'][index]
+                                            ["course_id"],
                                       ),
                                     ));
                               },

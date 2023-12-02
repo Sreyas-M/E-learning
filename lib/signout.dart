@@ -18,7 +18,6 @@ class _SignOutState extends State<SignOut> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
     );
   }
 }

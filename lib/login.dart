@@ -1,81 +1,18 @@
 import 'dart:convert';
-
 import 'package:elearning/bottom_nav.dart';
+import 'package:elearning/provider/loginprovider.dart';
 import 'package:elearning/register.dart';
 import 'package:elearning/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Userlogin extends StatefulWidget {
+class Userlogin extends StatelessWidget {
   const Userlogin({Key? key}) : super(key: key);
 
-  @override
-  State<Userlogin> createState() => UserloginState();
-}
-
-class UserloginState extends State<Userlogin> {
-  TextEditingController email = TextEditingController();
-  TextEditingController pass = TextEditingController();
-  GlobalKey<FormState> formkey =GlobalKey();
-  var data1;
-  int user_id=0;
-  Future  login()async{
-    print("----");
-    var data={
-      "email":email.text,"password":pass.text
-    };
-    try{
-      Response response=await post(Uri.parse("http://192.168.43.135/php/elearn/api/getuserapi.php"),body: data);
-      print(response.body);
-      if(response.statusCode==200){
-        var result = jsonDecode(response.body);
-          data1=result;
-        print(data1);
-        if(result["data"]==null){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please register"),));
-        }
-        else{
-          var data1=result["data"]["user_id"];
-          user_id=int.parse(data1);
-
-          userCrenditails();
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>BottomNav()));
-        }
-      }else {
-        print("HTTP Error: ${response.statusCode}");
-        print("Response Body: ${response.body}");
-        Fluttertoast.showToast(
-          msg: "Error: ${response.statusCode}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-          timeInSecForIosWeb: 5,
-        );
-      }
-    }catch(e){
-      print("Error: $e");
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-        timeInSecForIosWeb: 5,
-      );
-
-    }
-  }
-  userCrenditails()async{
-    SharedPreferences sharedPreferences= await SharedPreferences.getInstance();
-    sharedPreferences.setInt("user", user_id);
-    sharedPreferences.setBool('user_logged', true);
-  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,11 +36,14 @@ class UserloginState extends State<Userlogin> {
                     right: 35,
                     left: 35),
                 child: Form(
-                  key: formkey,
+                  key: Provider.of<LoginProvider>(context, listen: false)
+                      .formKeyreg,
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: email,
+                        controller:
+                            Provider.of<LoginProvider>(context, listen: false)
+                                .emailController,
                         decoration: InputDecoration(
                             fillColor: Colors.grey.shade600,
                             hintText: "Email",
@@ -114,7 +54,9 @@ class UserloginState extends State<Userlogin> {
                         height: 30,
                       ),
                       TextFormField(
-                        controller: pass,
+                        controller:
+                            Provider.of<LoginProvider>(context, listen: false)
+                                .passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                             fillColor: Colors.grey.shade600,
@@ -128,15 +70,32 @@ class UserloginState extends State<Userlogin> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-
                           CircleAvatar(
                             radius: 30,
                             backgroundColor: Color.fromARGB(255, 60, 170, 223),
                             child: IconButton(
                                 onPressed: () {
-                                  bool validator=formkey.currentState!.validate();
-                                  if(validator==true) {
-                                    login();
+                                  bool validator = Provider.of<LoginProvider>(
+                                          context,
+                                          listen: false)
+                                      .formKeyreg
+                                      .currentState!
+                                      .validate();
+                                  if (validator == true) {
+                                    Provider.of<LoginProvider>(context,
+                                            listen: false)
+                                        .login(
+                                      email: Provider.of<LoginProvider>(context,
+                                              listen: false)
+                                          .emailController
+                                          .text,
+                                      password: Provider.of<LoginProvider>(
+                                              context,
+                                              listen: false)
+                                          .passwordController
+                                          .text,
+                                      context: context,
+                                    );
                                   }
                                 },
                                 icon: Icon(

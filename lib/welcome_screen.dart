@@ -1,39 +1,21 @@
 import 'package:elearning/login.dart';
+import 'package:elearning/provider/loginprovider.dart';
+import 'package:elearning/provider/welcomeprovider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bottom_nav.dart';
 import 'fulldisplay.dart';
 
-class BaseScreen extends StatefulWidget {
+class BaseScreen extends StatelessWidget {
   const BaseScreen({Key? key}) : super(key: key);
 
   @override
-  State<BaseScreen> createState() => _BaseScreenState();
-}
-
-class _BaseScreenState extends State<BaseScreen> {
-  void checkLogin() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    final userLoginCred = pref.getBool('user_logged');
-    if(userLoginCred ==true){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNav(),));
-      Fluttertoast.showToast(msg: "Welcome");
-    }else{
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Userlogin(),));
-      Fluttertoast.showToast(msg: "Please login");
-    }
-  }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.delayed(Duration(seconds: 3)).whenComplete(() => checkLogin());
-  }
-  @override
   Widget build(BuildContext context) {
+    Provider.of<WelcomeProvider>(context, listen: false).checkLogin(context);
     return Scaffold(
       body: Column(
         children: [
@@ -89,33 +71,32 @@ class _BaseScreenState extends State<BaseScreen> {
                         SizedBox(
                           height: 40,
                         ),
-                        Row(
-                          //button position
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            MaterialButton(
-                              height: 60,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0)),
-                              color: Colors.pink,
-                              onPressed: () {
-                                //home screen path
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => BottomNav()));
-
-                              },
-                              child: Text(
-                                "Get Started",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.white),
-                              ),
-                            )
-                          ],
-                        )
+                        // Row(
+                        //   //button position
+                        //   mainAxisAlignment: MainAxisAlignment.end,
+                        //   children: [
+                        //     MaterialButton(
+                        //       height: 60,
+                        //       shape: RoundedRectangleBorder(
+                        //           borderRadius: BorderRadius.circular(15.0)),
+                        //       color: Colors.pink,
+                        //       onPressed: () {
+                        //         //home screen path
+                        //         // Navigator.push(
+                        //         //     context,
+                        //         //     MaterialPageRoute(
+                        //         //         builder: (context) => BottomNav()));
+                        //       },
+                        //       child: Text(
+                        //         "Get Started",
+                        //         style: TextStyle(
+                        //             fontWeight: FontWeight.bold,
+                        //             fontSize: 18,
+                        //             color: Colors.white),
+                        //       ),
+                        //     )
+                        //   ],
+                        // )
                       ],
                     ),
                   ),
