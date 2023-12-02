@@ -8,9 +8,11 @@ import 'package:provider/provider.dart';
 import 'login.dart';
 
 class MyRegister extends StatelessWidget {
-  const MyRegister({Key? key}) : super(key: key);
+MyRegister({Key? key}) : super(key: key);
 
+final formKeyreg = GlobalKey<FormState>();
   @override
+
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -51,8 +53,7 @@ class MyRegister extends StatelessWidget {
                     right: 35,
                     left: 35),
                 child: Form(
-                  key: Provider.of<RegisterProvider>(context, listen: false)
-                      .formKeyreg,
+                  key:formKeyreg,
                   child: Column(
                     children: [
                       TextFormField(
@@ -155,7 +156,7 @@ class MyRegister extends StatelessWidget {
                                 onPressed: () {
                                   Provider.of<RegisterProvider>(context,
                                           listen: false)
-                                      .addUser(context);
+                                      .addUser(context,formKeyreg);
                                 },
                                 icon: Icon(
                                   Icons.coronavirus_rounded,

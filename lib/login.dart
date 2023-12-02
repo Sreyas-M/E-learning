@@ -11,8 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Userlogin extends StatelessWidget {
-  const Userlogin({Key? key}) : super(key: key);
+  Userlogin({Key? key}) : super(key: key);
 
+  GlobalKey<FormState> formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +37,7 @@ class Userlogin extends StatelessWidget {
                     right: 35,
                     left: 35),
                 child: Form(
-                  key: Provider.of<LoginProvider>(context, listen: false)
-                      .formKeyreg,
+                  key: formKey,
                   child: Column(
                     children: [
                       TextFormField(
@@ -75,10 +75,7 @@ class Userlogin extends StatelessWidget {
                             backgroundColor: Color.fromARGB(255, 60, 170, 223),
                             child: IconButton(
                                 onPressed: () {
-                                  bool validator = Provider.of<LoginProvider>(
-                                          context,
-                                          listen: false)
-                                      .formKeyreg
+                                  bool validator =formKey
                                       .currentState!
                                       .validate();
                                   if (validator == true) {

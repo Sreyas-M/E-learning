@@ -9,7 +9,6 @@ import '../bottom_nav.dart';
 class LoginProvider extends ChangeNotifier {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  GlobalKey<FormState> formKeyreg = GlobalKey();
   var data1;
   int user_id =0;
   var data;
@@ -113,9 +112,4 @@ class LoginProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-  // userCredential()async{
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   preferences.setBool("user_logged", true);
-  //   notifyListeners();
-  // }
 }

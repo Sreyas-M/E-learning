@@ -11,12 +11,11 @@ class RegisterProvider extends ChangeNotifier{
   TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
   TextEditingController phone = TextEditingController();
-  final formKeyreg = GlobalKey<FormState>();
   XFile? image;
 
 
-  addUser(BuildContext context) async {
-    if (formKeyreg.currentState?.validate() ?? false) {
+  addUser(BuildContext context , fkey) async {
+    if (fkey.currentState?.validate() ?? false) {
       final uri = Uri.parse("http://192.168.43.135/php/elearn/api/adduserapi.php");
       var request = http.MultipartRequest("POST", uri);
       request.fields["firstname"] = name.text;
