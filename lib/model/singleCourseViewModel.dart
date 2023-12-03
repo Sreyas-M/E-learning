@@ -1,9 +1,9 @@
-class UserModel {
+class SingleCourseView {
   Data? data;
 
-  UserModel({this.data});
+  SingleCourseView({this.data});
 
-  UserModel.fromJson(Map<String, dynamic> json) {
+  SingleCourseView.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
@@ -17,46 +17,58 @@ class UserModel {
 }
 
 class Data {
-  String? userId;
-  String? image;
-  String? firstname;
-  String? lastname;
-  String? email;
-  String? password;
-  String? phone;
-  String? address;
+  String? courseId;
+  String? name;
+  String? image1;
+  String? vidname;
+  String? author;
+  String? topicfir;
+  String? topicsec;
+  String? topicthird;
+  String? topicfour;
+  String? price;
+  String? description;
 
   Data(
-      {this.userId,
-        this.image,
-        this.firstname,
-        this.lastname,
-        this.email,
-        this.password,
-        this.phone,
-        this.address});
+      {this.courseId,
+        this.name,
+        this.image1,
+        this.vidname,
+        this.author,
+        this.topicfir,
+        this.topicsec,
+        this.topicthird,
+        this.topicfour,
+        this.price,
+        this.description});
 
   Data.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    image = json['image'];
-    firstname = json['firstname'];
-    lastname = json['lastname'];
-    email = json['email'];
-    password = json['password'];
-    phone = json['phone'];
-    address = json['address'];
+    courseId = json['course_id'];
+    name = json['name'];
+    image1 = json['image1'];
+    vidname = json['vidname'];
+    author = json['author'];
+    topicfir = json['topicfir'];
+    topicsec = json['topicsec'];
+    topicthird = json['topicthird'];
+    topicfour = json['topicfour'];
+    price = json['price'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['image'] = this.image;
-    data['firstname'] = this.firstname;
-    data['lastname'] = this.lastname;
-    data['email'] = this.email;
-    data['password'] = this.password;
-    data['phone'] = this.phone;
-    data['address'] = this.address;
+    data['course_id'] = this.courseId;
+    data['name'] = this.name;
+    data['image1'] = this.image1;
+    data['vidname'] = this.vidname;
+    data['author'] = this.author;
+    data['topicfir'] = this.topicfir;
+    data['topicsec'] = this.topicsec;
+    data['topicthird'] = this.topicthird;
+    data['topicfour'] = this.topicfour;
+    data['price'] = this.price;
+    data['description'] = this.description;
     return data;
   }
 }

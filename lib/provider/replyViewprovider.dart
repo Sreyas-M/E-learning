@@ -1,12 +1,12 @@
 import 'dart:convert';
-
+import 'package:elearning/model/replyViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ReplyViewProvider extends ChangeNotifier{
-  Future repliesfromAdmin({required userId}) async {
+  var  data1;
+  Future<ReplyModel> repliesfromAdmin({required userId}) async {
     var data = {"user_id": userId.toString()};
     Response response = await post(
         Uri.parse(
@@ -14,13 +14,11 @@ class ReplyViewProvider extends ChangeNotifier{
         body: data);
     if (response.statusCode == 200) {
       print('success');
-
-      var  data1 = jsonDecode(response.body);
-      print(data1);
-      return data1;
+      data1 = ReplyModel.fromJson(jsonDecode(response.body));
 
     }
     notifyListeners();
+    return data1;
   }
 
   Future removeReply({required id})async{

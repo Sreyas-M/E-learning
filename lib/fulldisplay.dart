@@ -1,20 +1,12 @@
-import 'dart:convert';
 import 'dart:core';
-
 import 'package:elearning/course_screen.dart';
 import 'package:elearning/ip.dart';
-import 'package:elearning/model/courseModel.dart';
+import 'package:elearning/model/fullCourseModel.dart';
 import 'package:elearning/provider/fullDisplayprovider.dart';
 import 'package:elearning/provider/loginprovider.dart';
-import 'package:elearning/provider/welcomeprovider.dart';
-import 'package:elearning/relpy.dart';
-import 'package:elearning/replyView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
 
 class DisplayPage extends StatelessWidget {
   const DisplayPage({Key? key}) : super(key: key);
@@ -75,9 +67,9 @@ class DisplayPage extends StatelessWidget {
                   height: 10,
                 ),
                 //Builder for courses
-                FutureBuilder(
-                    future: Provider.of<DisplayProvider>(context, listen: false).viewPackages(),
-                    builder: (context, snapshot) {
+                FutureBuilder<CourseModel>(
+                    future: Provider.of<DisplayProvider>(context, listen: false).viewPackages(context),
+                    builder: (context,AsyncSnapshot<CourseModel> snapshot) {
                       // if (snapshot.connectionState==ConnectionState.waiting){
                       //   return Center(
                       //     child: CircularProgressIndicator(),
@@ -87,7 +79,7 @@ class DisplayPage extends StatelessWidget {
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data["data"].length,
+                          itemCount: snapshot.data!.data!.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -119,14 +111,12 @@ class DisplayPage extends StatelessWidget {
                                         //     ["topicthird"],
                                         // topicfour: snapshot.data['data'][index]
                                         //     ["topicfour"],
-                                        name: snapshot.data['data'][index]
-                                            ["name"],
+                                        name: snapshot.data!.data![index].name!,
                                         // author: snapshot.data['data'][index]
                                         //     ["author"],
                                         // vidname: snapshot.data['data'][index]
                                         //     ["vidname"],
-                                        course_id: snapshot.data['data'][index]
-                                            ["course_id"],
+                                        course_id: snapshot.data!.data![index].courseId!,
                                       ),
                                     ));
                               },
@@ -141,13 +131,13 @@ class DisplayPage extends StatelessWidget {
                                     Padding(
                                       padding: EdgeInsets.all(10),
                                       child: Image.network(
-                                          "${ipData.ip}/${ipData.image}/${snapshot.data["data"][index]["image1"]}"),
+                                          "${ipData.ip}/${ipData.image}/${snapshot.data!.data![index].image1!}"),
                                     ),
                                     SizedBox(
                                       height: 10,
                                     ),
                                     Text(
-                                      snapshot.data['data'][index]['name'],
+                                      snapshot.data!.data![index].name!,
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600,
@@ -158,7 +148,7 @@ class DisplayPage extends StatelessWidget {
                                       height: 10,
                                     ),
                                     Text(
-                                      snapshot.data['data'][index]['vidname'],
+                                      snapshot.data!.data![index].vidname!,
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -169,7 +159,7 @@ class DisplayPage extends StatelessWidget {
                                       height: 10,
                                     ),
                                     Text(
-                                      "${snapshot.data['data'][index]['price']} /-",
+                                      "${snapshot.data!.data![index].price!} /-",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w900,

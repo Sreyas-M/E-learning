@@ -1,14 +1,10 @@
-import 'dart:convert';
 import 'package:elearning/ip.dart';
-import 'package:elearning/provider/feedbackprovider.dart';
+import 'package:elearning/model/viewOrderModel.dart';
 import 'package:elearning/provider/loginprovider.dart';
 import 'package:elearning/provider/vieworderProvider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewOOrder extends StatelessWidget {
   const ViewOOrder({Key? key}) : super(key: key);
@@ -21,21 +17,18 @@ class ViewOOrder extends StatelessWidget {
           backgroundColor: Colors.blueAccent,
           title: Text("My Orders"),
         ),
-        body: FutureBuilder(
+        body: FutureBuilder<OrderModel>(
           future: Provider.of<OrderProvider>(context, listen: false).viewOrders(
               user_data: Provider.of<LoginProvider>(context).user_id),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          builder: (BuildContext context,AsyncSnapshot<OrderModel> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
             if (snapshot.hasData) {
-              if (snapshot.data['data'] == null) {
-                return Center(child: Text("No data"));
-              }
               return ListView.builder(
-                itemCount: snapshot.data["data"].length,
+                itemCount: snapshot.data!.data!.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.all(12),
@@ -56,7 +49,7 @@ class ViewOOrder extends StatelessWidget {
                                 children: [
                                   Image(
                                     image: NetworkImage(
-                                        "${ipData.ip}/${ipData.image}/${snapshot.data["data"][index]['image1']}"),
+                                        "${ipData.ip}/${ipData.image}/${snapshot.data!.data![index].image1!}"),
                                     width: 80,
                                     height: 70,
                                   ),
@@ -65,13 +58,13 @@ class ViewOOrder extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        snapshot.data['data'][index]['author'],
+                                        snapshot.data!.data![index].author!,
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Price :\$${snapshot.data['data'][index]['price']}",
+                                        "Price :\$${snapshot.data!.data![index].price!}",
                                         style: TextStyle(fontSize: 16),
                                       ),
                                     ],
@@ -115,8 +108,7 @@ class ViewOOrder extends StatelessWidget {
                                       Provider.of<OrderProvider>(context,
                                               listen: false)
                                           .removeOrder(
-                                              o_id: snapshot.data["data"][index]
-                                                  ["o_id"]);
+                                              o_id: snapshot.data!.data![index].oId!);
                                     },
                                     child: Container(
                                         decoration: BoxDecoration(
