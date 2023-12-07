@@ -48,7 +48,7 @@ class DescriptionSection extends StatelessWidget {
                 color: Color(0xff674aef),
               ),
               SizedBox(
-                width: 5,
+                width: 10,
               ),
               Text(
                 "26 Hours",
@@ -56,6 +56,7 @@ class DescriptionSection extends StatelessWidget {
               )
             ],
           ),
+          SizedBox(width: 10,),
           Row(
             children: [
               Text(
@@ -75,16 +76,18 @@ class DescriptionSection extends StatelessWidget {
               ),
             ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              Provider.of<DescProvider>(context, listen: false)
-                  .purchaseOrder(context, course_id);
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => ViewOOrder()));
-              // await makePayment();
-            },
-            child: Text('Submit'),
-          ),
+
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     Provider.of<DescProvider>(context, listen: false)
+          //         .purchaseOrder(context, course_id);
+          //     Navigator.pushReplacement(context,
+          //         MaterialPageRoute(builder: (context) => ViewOOrder()));
+          //     // await makePayment();
+          //   },
+          //   child: Text('Submit'),
+          // ),
+
         ],
       ),
     );

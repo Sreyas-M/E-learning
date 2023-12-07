@@ -4,6 +4,7 @@ import 'package:elearning/provider/loginprovider.dart';
 import 'package:elearning/provider/vieworderProvider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class ViewOOrder extends StatelessWidget {
@@ -12,18 +13,24 @@ class ViewOOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.blueAccent,
         appBar: AppBar(
           backgroundColor: Colors.blueAccent,
-          title: Text("My Orders"),
+          title: Text("My Orders",style: TextStyle(color: Colors.white)),
         ),
-        body: FutureBuilder<OrderModel>(
-          future: Provider.of<OrderProvider>(context, listen: false).viewOrders(
+        body: StreamBuilder<OrderModel?>(
+          stream: Provider.of<OrderProvider>(context, listen: false).viewOrders(
               user_data: Provider.of<LoginProvider>(context).user_id),
-          builder: (BuildContext context,AsyncSnapshot<OrderModel> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<OrderModel?> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.network(
+                    "https://lottie.host/4d1ec630-cb30-4161-a07a-594ff4110911/34IxIdbFn5.json"),
+              );
+            }
+            if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
+              return Center(
+                child: Text("No orders available"),
               );
             }
             if (snapshot.hasData) {
@@ -108,7 +115,8 @@ class ViewOOrder extends StatelessWidget {
                                       Provider.of<OrderProvider>(context,
                                               listen: false)
                                           .removeOrder(
-                                              o_id: snapshot.data!.data![index].oId!);
+                                              o_id: snapshot
+                                                  .data!.data![index].oId!);
                                     },
                                     child: Container(
                                         decoration: BoxDecoration(

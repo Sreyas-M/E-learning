@@ -25,7 +25,6 @@ void main() async {
     ChangeNotifierProvider(create: (context) => RegisterProvider()),
     ChangeNotifierProvider(create: (context) => CourseScreenProvider()),
     ChangeNotifierProvider(create: (context) => DescProvider()),
-
   ], child: Myapp()));
 }
 
@@ -37,7 +36,7 @@ class Myapp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home:BaseScreen(),
+      home: BaseScreen(),
     );
   }
 }

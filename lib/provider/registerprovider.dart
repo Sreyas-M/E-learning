@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,6 +11,7 @@ class RegisterProvider extends ChangeNotifier{
   TextEditingController pass = TextEditingController();
   TextEditingController phone = TextEditingController();
   XFile? image;
+  bool secure = true;
 
 
   addUser(BuildContext context , fkey) async {
@@ -53,6 +53,19 @@ class RegisterProvider extends ChangeNotifier{
     if (xFile != null) {
         image = xFile;
     }
+    notifyListeners();
+  }
+
+  void security(){
+    secure = !secure;
+    notifyListeners();
+  }
+
+  void ClearFullReg(){
+    name.clear();
+    email.clear();
+    pass.clear();
+    phone.clear();
     notifyListeners();
   }
 }

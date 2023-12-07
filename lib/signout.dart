@@ -11,9 +11,12 @@ class SignOut extends StatefulWidget {
 
 class _SignOutState extends State<SignOut> {
   void logout(BuildContext context)async{
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    SharedPreferences sharedPreferences =
+    await SharedPreferences.getInstance();
     sharedPreferences.setBool('user_logged', false);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => Userlogin(),));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => Userlogin(),
+    ));
   }
   @override
   Widget build(BuildContext context) {

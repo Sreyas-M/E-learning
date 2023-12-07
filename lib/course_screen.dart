@@ -1,6 +1,8 @@
 import 'package:elearning/model/fullCourseModel.dart';
 import 'package:elearning/provider/courseScreenprovider.dart';
+import 'package:elearning/provider/descriptionprovider.dart';
 import 'package:elearning/provider/loginprovider.dart';
+import 'package:elearning/view_Oorder.dart';
 import 'package:elearning/widgets/description_section.dart';
 import 'package:elearning/widgets/videos_section.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,10 +32,11 @@ class CourseScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: FutureBuilder<SingleCourseView>(
-          future: Provider.of<CourseScreenProvider>(context)
+        body: StreamBuilder<SingleCourseView?>(
+          stream: Provider.of<CourseScreenProvider>(context)
               .getCourseData(context, course_id),
-          builder: (BuildContext context, AsyncSnapshot<SingleCourseView> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<SingleCourseView?> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(),
@@ -71,7 +74,7 @@ class CourseScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 15
                     ),
                     Text(
                       "${snapshot.data!.data!.name!} Complete Course",
@@ -92,16 +95,39 @@ class CourseScreen extends StatelessWidget {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      "${snapshot.data!.data!.vidname!}",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black.withOpacity(0.7),
-                      ),
+                    //New Submit Button
+                    Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "${snapshot.data!.data!.vidname!}",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black.withOpacity(0.7),
+                            ),
+                          ),
+                        ),
+Spacer(),                        //NewButton
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors
+                                .green, // Set the background color to green
+                          ),
+                          onPressed: () async {
+                            Provider.of<DescProvider>(context, listen: false)
+                                .purchaseOrder(context, course_id);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ViewOOrder()));
+                          },
+                          child: Text('Buy Now',style: TextStyle(color: CupertinoColors.black)),
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 20
                     ),
                     Container(
                       padding:
@@ -151,7 +177,6 @@ class CourseScreen extends StatelessWidget {
                                 Provider.of<CourseScreenProvider>(context,
                                         listen: false)
                                     .isVideoSelection();
-                                //isVideosSection = false;
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(

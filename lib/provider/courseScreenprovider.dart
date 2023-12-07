@@ -7,9 +7,9 @@ import '../model/fullCourseModel.dart';
 import '../model/singleCourseViewModel.dart';
 
 class CourseScreenProvider extends ChangeNotifier {
-  var result;
+  SingleCourseView? result;
   bool isVideo = true;
-  Future<SingleCourseView> getCourseData(context ,course_id) async {
+  Stream <SingleCourseView?> getCourseData(context ,course_id) async* {
     Response response = await post(
         Uri.parse(
             "http://192.168.43.135/php/elearn/api/singlecourseview_api.php"),
@@ -18,7 +18,7 @@ class CourseScreenProvider extends ChangeNotifier {
       result =SingleCourseView.fromJson(jsonDecode(response.body));
     }
    // notifyListeners();
-    return result;
+    yield result;
   }
 
 //need to createVideo Changing Button

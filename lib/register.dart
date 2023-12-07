@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:elearning/provider/registerprovider.dart';
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
 import 'login.dart';
 
 class MyRegister extends StatelessWidget {
@@ -114,8 +111,16 @@ final formKeyreg = GlobalKey<FormState>();
                           }
                           return null;
                         },
-                        obscureText: true,
+                        obscureText: Provider.of<RegisterProvider>(context,listen: false).secure,
                         decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                Provider.of<RegisterProvider>(context, listen: false).security();
+                              },
+                              icon: Provider.of<RegisterProvider>(context).secure == false
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off),
+                            ),
                             fillColor: Colors.grey.shade600,
                             hintText: "Password",
                             border: OutlineInputBorder(
@@ -149,21 +154,22 @@ final formKeyreg = GlobalKey<FormState>();
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Color.fromARGB(255, 60, 170, 223),
-                            child: IconButton(
-                                onPressed: () {
-                                  Provider.of<RegisterProvider>(context,
-                                          listen: false)
-                                      .addUser(context,formKeyreg);
-                                },
-                                icon: Icon(
-                                  Icons.coronavirus_rounded,
-                                  color: Colors.white,
-                                  size: 30,
-                                )),
-                          )
+                          MaterialButton(
+                            onPressed: () {
+                              Provider.of<RegisterProvider>(context,
+                                  listen: false)
+                                  .addUser(context,formKeyreg);
+                               Provider.of<RegisterProvider>(context,listen: false).ClearFullReg();
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                            color: Colors.blue,
+                            child: Text(
+                              "Register",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(

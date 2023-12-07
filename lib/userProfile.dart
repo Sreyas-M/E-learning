@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:elearning/ip.dart';
 import 'package:elearning/provider/loginprovider.dart';
-import 'package:elearning/provider/welcomeprovider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:elearning/widgets/user_detail_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -16,12 +13,11 @@ class Profile extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Center(
-            child: Text(
-          "Profile",
-          style: TextStyle(fontSize: 30),
-        )),
+        backgroundColor: Colors.blueAccent,
+        title: Text(
+          "User Profile",
+          style: TextStyle(fontSize: 30,color: Colors.white),
+        ),
       ),
       body: FutureBuilder(
           future: Provider.of<LoginProvider>(context, listen: false)
@@ -29,97 +25,41 @@ class Profile extends StatelessWidget {
           builder: (context, snapshot) {
             if(snapshot.connectionState==ConnectionState.waiting){
               return Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.network(
+                    "https://lottie.host/4d1ec630-cb30-4161-a07a-594ff4110911/34IxIdbFn5.json",
+                    animate: true),
               );
             }
             if (snapshot.hasData) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 200,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.orangeAccent,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  "${ipData.ip}/${ipData.image2}/${snapshot.data["data"]["image"]}"),
-                              fit: BoxFit.cover,
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            snapshot.data["data"]["firstname"],
-                            style: TextStyle(color: Colors.black, fontSize: 40),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            snapshot.data["data"]["lastname"],
-                            style: TextStyle(color: Colors.black, fontSize: 40),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Icon(
-                              Icons.call,
-                              color: Colors.black,
-                              size: 40,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 60),
-                            child: Text(
-                              "Phonenumber",
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.black),
-                            ),
-                          )
-                        ],
-                      ),
-                      Text(
-                        snapshot.data["data"]["phone"],
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                      SizedBox(height: 50),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Icon(
-                              Icons.email_rounded,
-                              color: Colors.black,
-                              size: 40,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 60),
-                            child: Text(
-                              "Email",
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.black),
-                            ),
-                          )
-                        ],
-                      ),
-                      Text(
-                        snapshot.data["data"]["email"],
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                    ],
+              return Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blueAccent, Colors.blueAccent],
                   ),
+
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 40),
+                    ClipOval(
+                      child: Image.network(
+                        "${ipData.ip}/${ipData.image2}/${snapshot.data["data"]["image"]}",
+                        fit: BoxFit.cover,
+                        height: 100,
+                        width: 100,
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    UserTile(head: 'Name :', value: snapshot.data['data']['firstname']),
+                    SizedBox(height: 20,),
+                    UserTile(head: 'E-Mail :', value: snapshot.data["data"]["email"]),
+                    SizedBox(height: 20,),
+                    UserTile(head: "Phone :", value: snapshot.data["data"]["phone"])
+                  ],
                 ),
               );
             } else {

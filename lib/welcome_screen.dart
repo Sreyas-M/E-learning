@@ -1,21 +1,16 @@
-import 'package:elearning/login.dart';
-import 'package:elearning/provider/loginprovider.dart';
 import 'package:elearning/provider/welcomeprovider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'bottom_nav.dart';
-import 'fulldisplay.dart';
 
 class BaseScreen extends StatelessWidget {
   const BaseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<WelcomeProvider>(context, listen: false).checkLogin(context);
+    //There is an ancestor error
+    Future.delayed(Duration(seconds: 5)).whenComplete(() =>
+        Provider.of<WelcomeProvider>(context, listen: false)
+            .checkLogin(context));
     return Scaffold(
       body: Column(
         children: [
@@ -68,35 +63,7 @@ class BaseScreen extends StatelessWidget {
                               height: 1.5,
                               fontWeight: FontWeight.w500),
                         ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        // Row(
-                        //   //button position
-                        //   mainAxisAlignment: MainAxisAlignment.end,
-                        //   children: [
-                        //     MaterialButton(
-                        //       height: 60,
-                        //       shape: RoundedRectangleBorder(
-                        //           borderRadius: BorderRadius.circular(15.0)),
-                        //       color: Colors.pink,
-                        //       onPressed: () {
-                        //         //home screen path
-                        //         // Navigator.push(
-                        //         //     context,
-                        //         //     MaterialPageRoute(
-                        //         //         builder: (context) => BottomNav()));
-                        //       },
-                        //       child: Text(
-                        //         "Get Started",
-                        //         style: TextStyle(
-                        //             fontWeight: FontWeight.bold,
-                        //             fontSize: 18,
-                        //             color: Colors.white),
-                        //       ),
-                        //     )
-                        //   ],
-                        // )
+                        SizedBox(height: 40),
                       ],
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:elearning/model/replyViewModel.dart';
 import 'package:elearning/provider/loginprovider.dart';
 import 'package:elearning/provider/replyViewprovider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class Replies extends StatelessWidget {
@@ -11,7 +12,7 @@ class Replies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Replies'),
+        title: Text('Replies',style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.blue,
       ),
       body: FutureBuilder<ReplyModel>(
@@ -22,10 +23,12 @@ class Replies extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          if (snapshot.hasError) {
+          if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
             return Center(
-              child: Text("Error: ${snapshot.error}"),
-            );}
+              child: Text("No Replies available"),
+            );
+          }
+
             if (snapshot.hasData){
               return ListView.builder(
                 itemCount: snapshot.data!.data!.length,
@@ -35,16 +38,13 @@ class Replies extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: ListTile(
                       title: Text(
-                        snapshot.data!.data![index].reply!,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontStyle: FontStyle.italic,
-                        ),
+                          snapshot.data!.data![index].reply!,
+                        style:GoogleFonts.aBeeZee(fontSize: 25)
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                          snapshot.data!.data![index].queries! ?? "No data",
+                          "Q.${snapshot.data!.data![index].queries! ?? "No data"}",
                           style: TextStyle(
                             fontSize: 16,
                           ),
